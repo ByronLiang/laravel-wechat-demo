@@ -14,6 +14,7 @@ return [
         'debug' => env('WECHAT_DEBUG'),
         'appid' => env('WECHAT_APP_ID'),
         'appsecret' => env('WECHAT_APP_SECRET'),
+        'token' => env('WECHAT_TOKEN'),
         'merchantid' => env('WECHAT_MERCHANT_ID'),
         'paykey' => env('WECHAT_PAY_KEY'),
         'paycertpath' => env('WECHAT_PAY_CERT_PATH'),

@@ -18,6 +18,7 @@ class WechatService
             'debug' => $cfg['debug'],
             'app_id' => $cfg['appid'],
             'secret' => $cfg['appsecret'],
+            'token'   => $cfg['token'],
             'log' => [
                 'level' => 'debug',
                 'file' => storage_path('logs/wechat-'.date('Y-m-d').'.log'),
