@@ -1,0 +1,36 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "debug": false,
+        "targets": {
+          "browsers": [
+            "ie >= 9",
+            "chrome >= 30",
+            "android >= 4",
+            "safari >= 7"
+          ]
+        },
+        "useBuiltIns": true,
+        "modules": false
+      }
+    ],
+    "stage-0"
+  ],
+  "plugins": [
+    [
+      "component",
+      [
+        {
+          "libraryName": "mint-ui",
+          "style": true
+        },
+        {
+          "libraryName": "element-ui",
+          "styleLibraryName": "theme-chalk"
+        }
+      ]
+    ]
+  ]
+}
