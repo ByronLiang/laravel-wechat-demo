@@ -100,4 +100,20 @@ class WechatService
             Log::error('wechat refund fail: '.json_encode($result));
         }
     }
+
+    // 普通消息回复功能
+    public function simpleMessage()
+    {
+        $server = $this->app->server;
+        $response = $server->setMessageHandler(function ($message) {
+            return "您好！欢迎使用 EasyWeChat; ". $message->MsgType ."your input is" . $message->Content;
+        });
+
+        return $response->serve();
+    }
+
+    public function messageHandle($message)
+    {
+        return "您好！欢迎使用 EasyWeChat;". $message->MsgType ." <br>your input is" . $message->Content;
+    }
 }

@@ -12,6 +12,7 @@
 */
 
 Route::group(['prefix' => 'api', 'namespace' => 'API', 'middleware' => 'auth.driver:api'], function () {
+    Route::any('message', 'MessageController@answer');
     Route::group(['middleware' => 'auth'], function () {
     });
 });
