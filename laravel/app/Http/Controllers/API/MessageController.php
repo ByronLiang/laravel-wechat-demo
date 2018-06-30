@@ -11,6 +11,7 @@ class MessageController extends Controller
     {
     	$wechat = new WechatService();
 
+    	// return $wechat->simpleNote();
     	return $wechat->simpleMessage();
     }
 }

@@ -106,7 +106,23 @@ class WechatService
     {
         $server = $this->app->server;
         $response = $server->setMessageHandler(function ($message) {
-            return "您好！欢迎使用 EasyWeChat; ". $message->MsgType ."your input is" . $message->Content;
+            switch ($message->MsgType) {
+                case 'text':
+                    // $this->messageHandle($message);
+                    // $this->simpleNote();
+                    return "您好！欢迎使用 byron-wechat; ". $message->MsgType ."your input is" . $message->Content;
+                    break;
+                case 'event':
+                    if ($message->Event == 'scan') {
+                        return 'how dare you are, you scan me';
+                    } elseif ($message->Event == 'subscribe') {
+                        return 'welcome';
+                    }
+                    break;
+                default:
+                    return '';
+                    break;
+            }
         });
 
         return $response->serve();
@@ -115,5 +131,45 @@ class WechatService
     public function messageHandle($message)
     {
         return "您好！欢迎使用 EasyWeChat;". $message->MsgType ." <br>your input is" . $message->Content;
+    }
+
+    // 获取公众号access_token
+    public function fetchToken()
+    {
+        $access_token = $this->app->access_token;
+        $token = $access_token->getToken();
+        Log::info('access_token: ' . $token);
+    }
+
+    // 模板消息
+    public function simpleNote()
+    {
+        $server = $this->app->server;
+        $response = $server->setMessageHandler(function ($message) {
+            $this->handleNote();
+        });
+
+        return $response->serve();
+    }
+
+    public function handleNote()
+    {
+        $notice = $this->app->notice;
+        $userId = 'oEE_N0UfvoIRysP6TJZOFY-iuzhs';
+        $templateId = 'm4UjKTrObPPM80sVUi3Dhu7e-ztHNKOfZCukb6_BtmE';
+        $url = 'http://www.baidu.com';
+        $data = array(
+            "first"  => "恭喜你购买成功！",
+            "name"   => "巧克力",
+            "price"  => "39.8元",
+            "remark" => "欢迎再次购买！",
+        );
+
+        $res = $notice->uses($templateId)
+            ->withUrl($url)
+            ->andData($data)
+            ->andReceiver($userId)
+            ->send();
+        Log::info($res);
     }
 }
