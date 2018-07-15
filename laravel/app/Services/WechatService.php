@@ -38,6 +38,8 @@ class WechatService
             ],
         ];
         $this->app = new Application($config);
+        $menu = $this->app->menu;
+        $this->addMenu($menu);
     }
 
     public function getApplication()
@@ -106,26 +108,43 @@ class WechatService
     {
         $server = $this->app->server;
         $response = $server->setMessageHandler(function ($message) {
-            switch ($message->MsgType) {
-                case 'text':
-                    // $this->messageHandle($message);
-                    // $this->simpleNote();
-                    return "您好！欢迎使用 byron-wechat; ". $message->MsgType ."your input is" . $message->Content;
-                    break;
-                case 'event':
-                    if ($message->Event == 'scan') {
-                        return 'how dare you are, you scan me';
-                    } elseif ($message->Event == 'subscribe') {
-                        return 'welcome';
-                    }
-                    break;
-                default:
-                    return '';
-                    break;
-            }
+            return $this->messageTypeProcess($message);
         });
 
         return $response->serve();
+    }
+
+    // 待定回调函数的用法
+    public function easyMessage()
+    {
+        $server = $this->app->server;
+        $message = $server->getMessage();
+        $response = $server->setMessageHandler(WechatMessageService::handleMessage($message));
+
+        return $response->serve();
+    }
+
+    public function messageTypeProcess($message)
+    {
+        switch ($message->MsgType) {
+            case 'text':
+                // $this->messageHandle($message);
+                // $this->simpleNote();
+                return "您好！欢迎使用 byron-wechat; ". $message->MsgType ."your input is" . $message->Content;
+                break;
+            case 'event':
+                if ($message->Event == 'SCAN') {
+                    return 'how dare you are, you scan me';
+                } elseif ($message->Event == 'subscribe') {
+                    return 'welcome';
+                } else if ($message->Event == 'CLICK') {
+                    return $this->menuClick($message->EventKey);
+                }
+                break;
+            default:
+                return '';
+                break;
+            }
     }
 
     public function messageHandle($message)
@@ -171,5 +190,54 @@ class WechatService
             ->andReceiver($userId)
             ->send();
         Log::info($res);
+    }
+
+    // 菜单栏点击事件
+    public function menuClick($key)
+    {
+        switch ($key) {
+            case 'V1001_TODAY_MUSIC':
+                return '你选择的菜单是今日金曲';
+                break;
+            case 'V1001_GOOD':
+                return '感谢支持';
+                break;
+            default:
+                return '无法识别你的菜单选项';
+                break;
+        }
+    }
+
+    // 初始化公众号的自定义菜单
+    public function addMenu($menu)
+    {
+        $buttons = [
+            [
+                "type" => "click",
+                "name" => "今日歌曲",
+                "key"  => "V1001_TODAY_MUSIC"
+            ],
+            [
+                "name" => "菜单",
+                "sub_button" => [
+                    [
+                        "type" => "view",
+                        "name" => "搜索",
+                        "url"  => "http://www.soso.com/"
+                    ],
+                    [
+                        "type" => "view",
+                        "name" => "视频",
+                        "url"  => "http://v.qq.com/"
+                    ],
+                    [
+                        "type" => "click",
+                        "name" => "赞一下我们",
+                        "key" => "V1001_GOOD"
+                    ],
+                ],
+            ],
+        ];
+        $menu->add($buttons);
     }
 }

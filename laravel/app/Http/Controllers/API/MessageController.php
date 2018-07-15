@@ -13,5 +13,6 @@ class MessageController extends Controller
 
     	// return $wechat->simpleNote();
     	return $wechat->simpleMessage();
+    	// return $wechat->easyMessage();
     }
 }
